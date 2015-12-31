@@ -4,13 +4,15 @@
  *  Created on: Dec 31, 2015
  *      Author: ubuntu
  */
-#include <iostream>
+#include "debug.hpp"
+#include "server/postdispatcher.hpp"
 
 int main(int argc, char** argv)
 {
-	std::cout << "green beance." << std::endl;
-	return 0;
+    DEBUG_PRINT("Starting server...");
+
+
+
+    DEBUG_PRINT("Shutting down server...");
+    return 0;
 }
-
-
-

@@ -8,7 +8,7 @@
 
 int main(int argc, char** argv)
 {
-	std::cout << "green bens." << std::endl;
+	std::cout << "green beance." << std::endl;
 	return 0;
 }
 

@@ -21,6 +21,7 @@ public:
     static const std::size_t DEFAULT_MIN_THREADS;
     static const std::size_t DEFAULT_MAX_THREADS;
     static const unsigned int MAINTINENCE_INTERVAL_MS;
+    static const unsigned int SPINDOWN_MS;
 
     enum Mode_e
 	{
@@ -45,7 +46,10 @@ public:
             boost::unique_lock<boost::mutex> lock(threadBlockMutex);
             shouldRun = false;
         }
+        DEBUG_PRINT("Shutting down, letting new threads block...");
+        boost::this_thread::sleep(boost::posix_time::milliseconds(SPINDOWN_MS));
         threadBlockCondition.notify_all();
+        maintinenceBlockCondition.notify_all();
         try
         {
             threads.join_all();
@@ -162,6 +166,7 @@ private:
     		lock.unlock();
     		boost::this_thread::sleep(boost::posix_time::milliseconds(MAINTINENCE_INTERVAL_MS));
     		lock.lock();
+    		if(!shouldRun) break;
     		if((intervalCounter & 1) == 1)
     		{
     			if((maxOpenThreads - threadMaxUtilization) >= 2)
@@ -191,11 +196,13 @@ private:
                 boost::function<void()> task = tasks.front();
                 tasks.pop();
                 busyThreads++;
+
                 maintinenceBlockMutex.lock();
                 queuedTasks = true;
                 if(tasks.size() < queueMinSize) queueMinSize = tasks.size();
                 if(busyThreads > threadMaxUtilization) threadMaxUtilization = busyThreads;
                 maintinenceBlockMutex.unlock();
+
                 lock.unlock();
                 try
                 {

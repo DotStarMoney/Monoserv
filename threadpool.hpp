@@ -220,7 +220,4 @@ private:
     }
 };
 
-
-
-
 #endif /* THREADPOOL_HPP_ */

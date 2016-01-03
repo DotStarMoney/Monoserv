@@ -10,6 +10,7 @@
 
 
 #include <cstdio>
+#include <exception>
 
 #define DEBUG
 
@@ -33,7 +34,6 @@
 #define DEBUG_PRINT(fmt, ...) \
         do { if (DEBUG_PRINT_AVAILABLE) fprintf(stderr, "%s:%d:%s(): " fmt "\n", __FILENAME__,   \
                                                 __LINE__, __func__, ##__VA_ARGS__); } while (0)
-
 
 
 #endif /* DEBUG_HPP_ */

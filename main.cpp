@@ -11,6 +11,7 @@ int main(int argc, char** argv)
 {
     DEBUG_PRINT("Starting server...");
 
+    // add dynamic pool resize option to threadpool
 
 
     DEBUG_PRINT("Shutting down server...");

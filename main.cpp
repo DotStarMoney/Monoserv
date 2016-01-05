@@ -5,23 +5,22 @@
  *      Author: ubuntu
  */
 #include "debug.hpp"
-#include "server/tcpserver.hpp"
+#include "server/server.hpp"
 
-// need to add better way to end thread pool, race conditions could cause it to never exit
-// need to provide work function import for TCPServer
+using namespace Monospace;
 
+void sillyTask(Server::Socket& _sock, Server::TCPServerAccess& _access)
+{
+
+}
 
 int main(int argc, char** argv)
 {
-	Server::TCPServer server(2000);
+	Monospace::Server::TCPServer server(2000, sillyTask);
 
 	DEBUG_PRINT("Starting server...");
 
-
 	server.run();
 
-
-    DEBUG_PRINT("Shutting down server...");
-
-    return 0;
+	return 0;
 }

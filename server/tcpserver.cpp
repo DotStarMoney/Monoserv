@@ -5,63 +5,71 @@
  *      Author: Zamaster
  */
 #include "tcpserver.hpp"
-#include "../threadpool.hpp"
-#include <boost/asio.hpp>
 #include <boost/bind.hpp>
+#include "tcpserveraccess.hpp"
 
 using boost::asio::ip::tcp;
 
-namespace Server
-{
-	TCPServer::TCPServer()
+namespace Monospace
 	{
-		construct();
-	}
-
-	TCPServer::TCPServer(Port _port)
+	namespace Server
 	{
-		construct();
-		setPort(_port);
-	}
 
-	void TCPServer::construct()
-	{
-		port = 0;
-	}
-
-	void TCPServer::setPort(Port _port)
-	{
-		port = _port;
-	}
-
-	void TCPServer::run()
-	{
-		ThreadPool taskPool;
-		boost::asio::io_service IOProvider;
-		tcp::acceptor connectIn(IOProvider, tcp::endpoint(tcp::v4(), port));
-		tcp::socket* sockPtr;
-
-		taskPool.setMode(ThreadPool::DYNAMIC);
-
-		DEBUG_PRINT("Running TCP server...");
-
-		for(;;)
+		TCPServer::TCPServer()
 		{
-			sockPtr = new tcp::socket(IOProvider);
-			connectIn.accept(*sockPtr);
-			taskPool.addTask(boost::bind(socketDispatcher, sockPtr));
+			construct();
 		}
 
+		TCPServer::TCPServer(Port _port, ServerTask _stask)
+		{
+			construct();
+			setPort(_port);
+			setTask(_stask);
+		}
+
+		void TCPServer::construct()
+		{
+			port = 0;
+		}
+		TCPServerAccess TCPServer::getAccess()
+		{
+			return TCPServerAccess(this);
+		}
+		void TCPServer::setPort(Port _port)
+		{
+			port = _port;
+		}
+		void TCPServer::setTask(ServerTask _stask)
+		{
+			stask = _stask;
+		}
+
+		void TCPServer::run()
+		{
+			boost::asio::io_service IOProvider;
+			tcp::acceptor connectIn(IOProvider, tcp::endpoint(tcp::v4(), port));
+			tcp::socket* sockPtr;
+
+			taskPool.setMode(ThreadPool::DYNAMIC);
+
+			DEBUG_PRINT("Running TCP server...");
+
+			for(;;)
+			{
+				sockPtr = new tcp::socket(IOProvider);
+				connectIn.accept(*sockPtr);
+				taskPool.addTask(boost::bind(&socketDispatch, stask, sockPtr, getAccess()));
+			}
+
+		}
+
+		void TCPServer::socketDispatch(ServerTask _stask, tcp::socket* _socketPtr, TCPServerAccess _access)
+		{
+			_stask(*_socketPtr, _access);
+			delete(_socketPtr);
+		}
+
+
+
 	}
-    void TCPServer::socketDispatcher(tcp::socket* _socketPtr)
-    {
-    	taskMain(*_socketPtr);
-    	delete(_socketPtr);
-    }
-    void TCPServer::taskMain(tcp::socket& _socket)
-    {
-    	// need to get task from somewhere
-    }
-
-
 }

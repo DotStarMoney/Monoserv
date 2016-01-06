@@ -6,7 +6,8 @@
  */
 #include "tcpserver.hpp"
 #include <boost/bind.hpp>
-#include "tcpserveraccess.hpp"
+
+#include "socketaccess.hpp"
 
 using boost::asio::ip::tcp;
 
@@ -31,10 +32,6 @@ namespace Monospace
 		{
 			port = 0;
 		}
-		TCPServerAccess TCPServer::getAccess()
-		{
-			return TCPServerAccess(this);
-		}
 		void TCPServer::setPort(Port _port)
 		{
 			port = _port;
@@ -58,15 +55,16 @@ namespace Monospace
 			{
 				sockPtr = new tcp::socket(IOProvider);
 				connectIn.accept(*sockPtr);
-				taskPool.addTask(boost::bind(&socketDispatch, stask, sockPtr, getAccess()));
+				taskPool.addTask(boost::bind(&socketDispatch, stask, SocketAccess(sockPtr)));
 			}
 
 		}
 
-		void TCPServer::socketDispatch(ServerTask _stask, tcp::socket* _socketPtr, TCPServerAccess _access)
+		void TCPServer::socketDispatch(ServerTask _stask, SocketAccess _access)
 		{
-			_stask(*_socketPtr, _access);
-			delete(_socketPtr);
+			DEBUG_PRINT("Serving incoming connection...");
+			_stask(_access);
+			_access.deleteSocket();
 		}
 
 

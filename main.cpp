@@ -9,14 +9,21 @@
 
 using namespace Monospace;
 
-void sillyTask(Server::Socket& _sock, Server::TCPServerAccess& _access)
+void sillyTask(Server::SocketAccess& _access)
 {
+	char data[1024];
+	size_t length;
 
+	while(!_access.isClosed())
+	{
+		length = _access.readData(data, 1024);
+		_access.writeData(data, length);
+	}
 }
 
 int main(int argc, char** argv)
 {
-	Monospace::Server::TCPServer server(2000, sillyTask);
+	Server::TCPServer server(2000, sillyTask);
 
 	DEBUG_PRINT("Starting server...");
 

@@ -8,8 +8,8 @@
 #ifndef SERVER_HPP_
 #define SERVER_HPP_
 
+#include "socketaccess.hpp"
 #include "tcpserver.hpp"
-#include "tcpserveraccess.hpp"
 
 namespace Monospace
 {

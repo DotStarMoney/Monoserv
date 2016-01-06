@@ -10,7 +10,7 @@
 #include <boost/asio.hpp>
 #include <boost/core/noncopyable.hpp>
 #include "../threadpool.hpp"
-#include "tcpserveraccess.hpp"
+#include "socketaccess.hpp"
 
 using boost::asio::ip::tcp;
 namespace Monospace
@@ -18,11 +18,10 @@ namespace Monospace
 	namespace Server
 	{
 
-		class TCPServer: private boost::noncopyable, private IAsyncUtility
+		class TCPServer: private boost::noncopyable
 		{
-			friend TCPServerAccess;
 			typedef unsigned short Port;
-			typedef void (*ServerTask)(tcp::socket&, TCPServerAccess&);
+			typedef void (*ServerTask)(SocketAccess&);
 		public:
 			TCPServer();
 			TCPServer(Port _port, ServerTask _stask);
@@ -31,17 +30,7 @@ namespace Monospace
 			void run();
 		private:
 			void construct();
-			TCPServerAccess getAccess();
-			static void socketDispatch(ServerTask _stask, tcp::socket* _socketPtr, TCPServerAccess _access);
-
-			void async_addTask(boost::function<void()> _task)
-			{
-				taskPool.addTask(_task);
-			}
-			void async_sendData( /* parameter */ )
-			{
-				//
-			}
+			static void socketDispatch(ServerTask _stask, SocketAccess _access);
 
 			ThreadPool taskPool;
 			ServerTask stask;

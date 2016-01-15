@@ -17,6 +17,8 @@ void sillyTask(Server::SocketAccess& _access)
 	while(!_access.isClosed())
 	{
 		length = _access.readData(data, 1024);
+		data[1023] = 0;
+		DEBUG_PRINT("%s\n", data);
 		_access.writeData(data, length);
 	}
 }

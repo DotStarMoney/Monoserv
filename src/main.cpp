@@ -4,8 +4,8 @@
  *  Created on: Dec 31, 2015
  *      Author: ubuntu
  */
-#include "debug.hpp"
-#include "server/server.hpp"
+#include "../include/debug.hpp"
+#include "../include/server.hpp"
 
 using namespace Monospace;
 

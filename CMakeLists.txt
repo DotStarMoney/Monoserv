@@ -10,8 +10,8 @@ execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${CMAKE_BIN
 include_directories(${EX_PROJ_DIR}/INSTALL/include) 
 include_directories(${CMAKE_BINARY_DIR}/include)
 
-add_subdirectory(${CMAKE_BINARY_DIR}/src)
-add_subdirectory(${CMAKE_BINARY_DIR}/include)
+add_subdirectory(${CMAKE_BINARY_DIR}/../src)
+add_subdirectory(${CMAKE_BINARY_DIR}/../include)
 
 set(ABSOLUTE_SRC_FILES "")
 set(ABSOLUTE_HDR_FILES "")

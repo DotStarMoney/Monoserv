@@ -10,7 +10,6 @@ set(HDR_FILES
 	socketaccess.hpp
 	tcpserver.hpp
 
-	echo_server.hpp	
 	PARENT_SCOPE)
 
 source_group("Header Files" FILES ${HDR_FILES})

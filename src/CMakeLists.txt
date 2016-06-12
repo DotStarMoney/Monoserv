@@ -7,7 +7,6 @@ set(SRC_FILES
 	main.cpp 
 	threadpool.cpp
 	tcpserver.cpp
-	echo_server.cpp
 	PARENT_SCOPE)
 
 source_group("Source Files" FILES ${SRC_FILES})

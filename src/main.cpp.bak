@@ -5,7 +5,7 @@
  *      Author: ubuntu
  */
 #include "debug.hpp"
-#include "server/server.hpp"
+#include "server.hpp"
 
 using namespace Monospace;
 

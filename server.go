@@ -4,28 +4,27 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"golang.org/x/net/websocket"
 	"log"
 	"net/http"
-	"encoding/json"
-
-	"golang.org/x/net/websocket"
 )
 
 type Position struct {
-        X int	`json:"x"`
-        Y int	`json:"y"`
+	X int `json:"x"`
+	Y int `json:"y"`
 }
 
 type Projectile struct {
-        Owner string	`json:"owner"`
-        Pos Position	`json:"pos"`
+	Owner string   `json:"owner"`
+	Pos   Position `json:"pos"`
 }
 
 type Frame struct {
-        Player1Pos Position 	 `json:"player1Pos"`
-        Player2Pos Position	 `json:"player2Pos"`
-        Projectiles []Projectile `json:"projectiles"`
+	Player1Pos  Position     `json:"player1Pos"`
+	Player2Pos  Position     `json:"player2Pos"`
+	Projectiles []Projectile `json:"projectiles"`
 }
 
 func websocketHandler(ws *websocket.Conn) {
@@ -34,7 +33,7 @@ func websocketHandler(ws *websocket.Conn) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	c := make(chan []Frame)
 
 	go compile(c, msg[:n])
@@ -54,10 +53,12 @@ func websocketHandler(ws *websocket.Conn) {
 }
 
 func compile(c chan []Frame, wsMessage []byte) {
-	
-	// do some shtuff
-	frames := [256]Frame{} 
-	for i := 0; i < 4; i++ { 
+	// call some C functions because why not
+	fmt.Printf("Calling C functions")
+	PrintFromCFiles()
+	// compute bogus frames
+	frames := [256]Frame{}
+	for i := 0; i < 4; i++ {
 		for j := 0; j < 255; j++ {
 			frames[j].Player1Pos = Position{99, 0}
 			frames[j].Player2Pos = Position{0, 99}
@@ -70,6 +71,7 @@ func compile(c chan []Frame, wsMessage []byte) {
 }
 
 func main() {
+	PrintFromCFiles()
 	http.Handle("/", websocket.Handler(websocketHandler))
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
